@@ -1,0 +1,47 @@
+
+   {% extends 'Dashboard/commonheader.html' %}
+   {% block title %}Form{% endblock  %}
+   
+   
+   {% block task %}
+    
+ 
+    
+   
+   <div class=" w-3/6 bg-rose-500 m-auto  mt-10 mb-10 border rounded-lg ">
+
+
+        <p class=" text-center mt-5 text-2xl text-white">Event Information</p>
+        <div class="">
+            {% comment %} <input class="border rounded-lg p-2 mb-2 " type="text"> {% endcomment %}
+        </div>
+        <div class="">
+            {% csrf_token %}
+        {% if  messages %}            
+            {% for message in messages %}  
+            <div class="px-2 py-1 w-4/6 border rounded-lg text-white m-3
+                {% if message.tags == 'success'   %}bg-green-500
+                {% elif message.tags == 'error'   %}bg-red-600
+                {% endif %} ">
+                {{message}}
+             </div>
+            {% endfor %}
+        {% endif %}     
+        </div>
+     
+       <div class="bg-rose-500 p-12">
+      
+         <form action="" method="POST" >
+                {% csrf_token %}
+                {{category}}
+                {{event}}
+                {{participant}}
+               <div class="flex">
+                 <button class=" bg-white text-rose-600 p-2 border mt-5 rounded-lg">Submit</button>
+                <a href=" {% url 'Dashboard' %}"class="px-4 ml-4 bg-black text-white p-2 border mt-5 rounded-lg">Back</a>
+               </div>
+                
+         </form>
+       </div>
+    </div>
+  {% endblock task %}

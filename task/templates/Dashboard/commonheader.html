@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+
+</head>
+<body>
+ <nav class="bg-gray-800 w-full text-white p-4">
+  <div class="container mx-auto flex justify-between">
+    <a href=" {% url 'Dashboard' %}" class="font-bold">Event Management</a>
+    <div class="space-x-4">
+      <a href="{% url 'event' %}" class="hover:text-gray-300">Events</a>
+      <a href="{% url 'participant' %}" class="hover:text-gray-300">Participants</a>
+      <a href="{% url 'category' %}" class="hover:text-gray-300 mr-2">Categories</a>
+
+    </div>
+  </div>
+</nav>
+{% comment %} <div class="img">
+   <img class="img" src="{% static 'photo/1.png' %}" alt="Assignment 1">
+</div> {% endcomment %}
+  {% block task %}
+  
+  {% endblock task %}
+
+</body>
+</html>

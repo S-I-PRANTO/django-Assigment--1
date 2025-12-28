@@ -1,0 +1,75 @@
+   {% extends 'Dashboard/commonheader.html' %}
+   {% block title %}Form{% endblock  %}
+   
+   
+   {% block task %}
+    
+ 
+    
+   
+   <div class=" w-3/6 bg-rose-500 m-auto  mt-10 mb-10 border ">
+
+        {% for name in arr  %}
+           {% if name == 'Event' %}
+                <p class=" text-center mt-5 text-2xl text-white">{{name}}_Update</p>
+            {% elif name == 'Category' %}
+                <p class=" text-center mt-5 text-2xl text-white">{{name}}_Update</p>      
+            {% elif name == 'Participant' %}
+                <p class=" text-center mt-5 text-2xl text-white">{{name}}_Update</p>
+            {% endif %} 
+        {% endfor %}
+            
+                
+        
+        <div class="">
+            {% comment %} <input class="border rounded-lg p-2 mb-2 " type="text"> {% endcomment %}
+        </div>
+        <div class="">
+            {% csrf_token %}
+        {% if  messages %}            
+            {% for message in messages %}  
+            <div class="px-2 py-1 w-4/6 border rounded-lg text-white m-3
+                {% if message.tags == 'success'   %}bg-green-500
+                {% elif message.tags == 'error'   %}bg-red-600
+                {% endif %} ">
+                {{message}}
+             </div>
+            {% endfor %}
+        {% endif %}     
+        </div>
+     
+       <div class="bg-rose-500 p-12">
+      
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% for name  in arr  %}
+                {% if name == 'Event' %}
+                    <button type="submit"
+                     class="bg-blue-600 text-white px-4 py-2 rounded">
+                    {{name}}_Update</button>
+                    <a href="{% url 'event' %}" class="bg-slate-900 py-2 px-3 mt-2 text-white border rounded-lg inline-block">Back</a>
+                {% elif name == 'Category' %}
+                    <button type="submit"
+                     class="bg-blue-600 text-white px-4 py-2 rounded">
+                    {{name}}_Update</button>
+                    <a href="{% url 'category' %}" class="bg-slate-900 py-2 px-3 mt-2 text-white border rounded-lg inline-block">Back</a>
+                {% elif name == 'Participant' %}
+                    <button type="submit"
+                     class="bg-blue-600 text-white px-4 py-2 rounded">
+                    {{name}}_Update</button>
+                    <a href="{% url 'participant' %}" class="bg-slate-900 py-2 px-3 mt-2 text-white border rounded-lg inline-block">Back</a>
+                {% endif %}
+             {% endfor %}
+        </form>
+            
+            
+
+                
+       
+
+        
+       </div>
+    </div>
+  {% endblock task %}

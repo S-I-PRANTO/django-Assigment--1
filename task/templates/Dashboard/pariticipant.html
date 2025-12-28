@@ -1,0 +1,81 @@
+{% extends 'Dashboard/commonheader.html' %}
+
+{% block title %}
+    Participants
+{% endblock title %}
+    
+{% block task %}
+    
+<div class=" items-center mb-6 relative">
+    <h2 class="text-2xl font-bold text-gray-800">Participants List</h2>
+        <div class="">
+            {% csrf_token %}
+        {% if  messages %}            
+            {% for message in messages %}  
+            <div class="px-2 py-1 w-3/6 border rounded-lg text-white m-3
+                {% if message.tags == 'success'   %}bg-green-500
+                {% elif message.tags == 'error'   %}bg-red-600
+                {% endif %} ">
+                {{message}}
+             </div>
+            {% endfor %}
+        {% endif %}     
+        </div>
+</div>
+
+
+<div class="overflow-x-auto">
+    <table class="min-w-full border border-gray-300 rounded-lg overflow-hidden">
+        <thead class="bg-gray-800 text-white">
+            <tr>
+                <th class="px-4 py-2 text-left">Name</th>
+                <th class="px-4 py-2 text-left">Email</th>
+                <th class="px-4 py-2 text-left">Events</th>
+                <th class="px-4 py-2 text-center">Action</th>
+            </tr>
+        </thead>
+
+        <tbody class="bg-white">
+            {% for task in participants %}
+            <tr class="border-b hover:bg-gray-100">
+                <td class="px-4 py-2 font-medium">
+                    {{ task.Participant }}
+                </td>
+
+                <td class="px-4 py-2 text-gray-600">
+                    {{ task.email }}
+                </td>
+
+                <td class="px-4 py-2">
+                    {% for e in task.Event.all %}
+                        <span class="inline-block bg-blue-100 text-blue-700 text-sm px-2 py-1 rounded mr-1 mb-1">
+                            {{ e.Event_Name }}
+                        </span>
+                    {% empty %}
+                        <span class="text-gray-400">None</span>
+                    {% endfor %}
+                </td>
+
+                <td class="px-4 py-2 text-center flex">
+                    <a href="{% url 'update' task.id %}?type=Participant"  class="text-blue-600 hover:text-blue-800 font-medium mr-2">Edit</a>
+                    <span class="mr-2">|</span><form action="{% url 'delete' task.id %}?type=participant"   method="POST" class="">
+                            {% csrf_token %}
+                              <button href="" class="text-red-600 hover:text-red-800 ">Delete</button>
+                        </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="px-4 py-6 text-center text-gray-500">
+                    No participants found
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+     <button  class="bg-slate-900 py-2 px-3 mt-2 text-white border rounded-lg"><a href="{% url 'Dashboard' %}">Back</a></button>
+</div>
+
+
+{% endblock task %}
+    
