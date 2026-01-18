@@ -36,8 +36,6 @@ def Loginhome(request):
     todaysEvent = Event.objects.filter(data=todayDate).select_related('category')
 
     baseFilter = Event.objects.select_related('category')
-
-    
     if types == 'event':
         showtask=baseFilter
 
