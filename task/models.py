@@ -12,15 +12,15 @@ class Event(models.Model):
     time=models.TimeField()
     location=models.CharField(max_length=150)
     category=models.ForeignKey(Category,on_delete=models.CASCADE ,related_name="event")
-    participants = models.ManyToManyField(User, related_name="RBAC", blank=True)
+    participants = models.ManyToManyField(User,related_name="RBAC", blank=True)
     img_add=models.ImageField(upload_to='imges',blank=True,null=True,default='imges/default.png')
 
     def __str__(self):
         return self.Event_Name
     
-class Participant(models.Model):
-    Participant=models.CharField(max_length=250)
-    description=models.TextField()
+# class Participant(models.Model):
+#     Participant=models.CharField(max_length=250)
+#     description=models.TextField()
     # Event=models.ManyToManyField(Event,related_name="participant", blank=True)
 
 
