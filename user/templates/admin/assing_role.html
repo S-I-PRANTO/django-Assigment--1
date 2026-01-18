@@ -1,0 +1,29 @@
+{% extends 'adminNav.html' %}
+{% block userset %}
+    <style>
+        .assigned{
+            margin-left: 38px;
+            margin-top: 5px;
+        }
+    </style>
+<div class=" w-2/6 bg-rose-500 m-auto mt-10 p-6 rounded text-center">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="px-2 py-1 w-4/6 border rounded-lg text-white m-3
+                {% if message.tags == 'success' %}bg-green-500
+                {% elif message.tags == 'warning' %}bg-orange-400
+                {% elif message.tags == 'error' %}bg-red-600
+                {% endif %}">
+                {{ message }}
+            </div>
+    {% endfor %}
+    {% endif %} 
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{form}}
+        <button class="px-2 py-1 ml-8 border assigned text-white bg-rose-600 rounded">Assingne_Role</button>
+    </form>
+</div>
+
+
+{% endblock userset %}

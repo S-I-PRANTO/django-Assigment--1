@@ -1,21 +1,41 @@
 
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
-from task.form import CategoryForm, EventForm,ParticipantForm
-from task.models import Event,Participant,Category
+from django.contrib.auth.models import User
+from task.form import CategoryForm, EventForm
+from task.models import Event,Category
 from django.db.models import Count,Q
 from datetime import date
+from django.contrib.auth.decorators import user_passes_test,login_required
+
+def is_admin(user):
+    return user.is_superuser or user.groups.filter(name='Admin').exists()
+
+def is_organizer(user):
+    return user.groups.filter(name='Organizer').exists()
+
+def is_user(user):
+    return user.groups.filter(name='user').exists()
+
+def admin_or_organizer(user):
+    return is_admin(user) or is_organizer(user)
 def home(request):
+    return render(request,'defaultHome.html')
+
+
+
+@login_required
+def Loginhome(request):
     types=request.GET.get('type','all')
     todayDate=date.today()
 
-    total_participants = Participant.objects.aggregate(Total_participant=Count('id'))
+    total_participants = User.objects.aggregate(Total_participant=Count('id'))
     total_events = Event.objects.aggregate(total_Task=Count('id'))
     upcoming_events_count = Event.objects.filter(data__gt=todayDate).aggregate(Upcome_Task=Count('id'))
     past_events_count = Event.objects.filter(data__lt=todayDate).aggregate(Past_Task=Count('id'))
     todaysEvent = Event.objects.filter(data=todayDate).select_related('category')
 
-    baseFilter = Event.objects.select_related('category').prefetch_related('participant')
+    baseFilter = Event.objects.select_related('category')
 
     
     if types == 'event':
@@ -39,24 +59,38 @@ def home(request):
              'showtask'         :showtask
 
              }
-    return render(request,'Dashboard/dashboard.html',context)
+    
+    user = request.user
+    if user.groups.filter(name='Admin').exists() or user.is_superuser:
+        template_name = 'admin/Admindashboard.html'
+    elif user.groups.filter(name='Organizer').exists():
+        template_name = 'Organize/Organizedashboard.html'
+    elif user.groups.filter(name='user').exists():
+        template_name = 'userNav.html'
+    else: template_name='defaultHome.html'
+    return render(request,template_name,context)
 
+
+
+@login_required
 def participant(request):
-    participants=Participant.objects.prefetch_related('Event')
+    participants=User.objects.prefetch_related('RBAC')
     context={'participants':participants}
     return render(request,'Dashboard/pariticipant.html',context)
 
 
+@login_required
 def category(request):
     categories = Category.objects.all()
     return render(request, 'Dashboard/category.html', {
         'categories': categories
     })
 
+@login_required
 def event(request):
-#  event = Event.objects.prefetch_related('participant').select_related('category').get(id=id)
+    # event = Event.objects.prefetch_related('participant').select_related('category').get(id=id)
     query = request.GET.get('searchText', '') 
-    base_query = Event.objects.select_related('category').annotate(participants_count=Count('participant'))
+    base_query = Event.objects.select_related('category').annotate(participants_count=Count('participants'))
 
     if query:
         events = base_query.filter( Q(Event_Name__icontains=query) | Q(location__icontains=query)
@@ -68,43 +102,42 @@ def event(request):
         'events': events,
         'query': query,
     })
+
+@login_required
 def EventVeiw(request,id):
-    view_task=Event.objects.select_related('category').prefetch_related('participant').get(id=id)
+    view_task=Event.objects.select_related('category').prefetch_related('participants').get(id=id)
       
     return render(request, 'Dashboard/event.html',{
         'viewTask':view_task
           })
-
+@login_required
+@user_passes_test(admin_or_organizer)
 def form(request):
     category_form = CategoryForm()
     event_form = EventForm()
-    participant_form = ParticipantForm()
 
     if request.method == "POST":
         category_form = CategoryForm(request.POST)
-        event_form = EventForm(request.POST)
-        participant_form = ParticipantForm(request.POST)
+        event_form = EventForm(request.POST,request.FILES)
 
         if category_form.is_valid() and event_form.is_valid():
             category = category_form.save()
             event = event_form.save(commit=False)
             event.category = category
             event.save()
-
-            if participant_form.is_valid():
-                participant = participant_form.save()
-                participant.Event.add(event)
-
+            event_form.save_m2m()
             messages.success(request, "Event Created Successfully")
             return redirect("form")
 
     context = {
         "category": category_form,
         "event": event_form,
-        "participant": participant_form,
     }
     return render(request, "form.html", context)
 
+
+@user_passes_test(admin_or_organizer,login_url='no_permission')
+@login_required
 def Update(request, id):
     types = request.GET.get("type","Event")
 
@@ -121,10 +154,7 @@ def Update(request, id):
            objectType = get_object_or_404(Category, id=id)
            form_populated=CategoryForm
            
-    elif types=='Participant':
-           objectType = get_object_or_404(Participant, id=id)
-           form_populated=ParticipantForm
-           
+
 
 
     if request.method == "POST":
@@ -144,7 +174,8 @@ def Update(request, id):
     }
     return render(request, "Dashboard/update.html", context)
 
-
+@user_passes_test(admin_or_organizer,login_url='no_permission')
+@login_required
 def Delete_event(request, id):
     types = request.GET.get("type", "event")
     print(types)
@@ -157,9 +188,6 @@ def Delete_event(request, id):
         objectType = Category.objects.get(id=id)
         urls = 'category'  
 
-    elif types == 'participant':
-        objectType = Participant.objects.get(id=id)
-        urls = 'participant' 
 
     if request.method == "POST":
         objectType.delete()
@@ -173,3 +201,19 @@ def Delete_event(request, id):
 
     return redirect(urls)
 
+
+
+def Rsvp(request,id):
+    if request.method=='POST':
+        user=get_object_or_404(Event,id=id)
+        if user.participants.filter(id=request.user.id).exists():
+          messages.warning(request, "You have already RSVP for this event")
+        else:
+            user.participants.add(request.user)
+            messages.success(request, "RSVP successful Pleace Check Your Confirmation email.")
+
+    return redirect('show_rsvp')
+
+def showRsvp(request):
+    rsvp_events = request.user.RBAC.all()
+    return render(request, 'Dashboard/userDashboard.html', {'events': rsvp_events})

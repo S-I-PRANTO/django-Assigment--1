@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <style>
+      .topers{
+        margin-right:10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bg-white shadow-md">
+      <nav class="container mx-auto px-6 py-3">
+        <div class="flex justify-between items-center">
+          <a href="{% url 'user' %} " class="text-xl font-bold text-gray-800">GOOD'S_SHOP</a>
+          <div class="hidden md:flex space-x-4">
+            <a
+              href="{% url 'adminDashboard' %}"
+              class="text-gray-600 hover:text-gray-800"
+              >Dashboard</a
+            >
+            <a href="" class="text-gray-600 hover:text-gray-800">Tasks</a>
+            <a href="{% url 'groupList' %}" class="text-gray-600 hover:text-gray-800"
+              >Groups</a
+            >
+            <a
+              href="{% url 'createGroup' %} "
+              class="text-gray-600 hover:text-gray-800"
+              >Create Group</a
+            >
+          </div>
+          <div class="">
+                      {% if request.user.is_authenticated %}
+            <div class="flex items-center">
+                <p class="bg-white border rounded username py-1 px-2  topers  ">
+                    UserName: {{ request.user.username }}
+                </p>
+
+                <form action="{% url 'sign_out' %}" method="POST">
+                    {% csrf_token %}
+                    <button class=" md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">
+                        Sign_Out
+                    </button>
+                </form>
+            </div>
+        {% else %}
+             <a
+              href="{% url 'sign_up' %}"
+              class=" md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+              >Sign_Up</a
+            >
+
+            <a
+              href="{% url 'sign_in' %}"
+              class=" md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+              >Sign_In</a
+            >
+        {% endif %}
+          </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden mt-4">
+          <a href="#" class="block py-2 text-gray-600 hover:text-gray-800"
+            >Dashboard</a
+          >
+          <a href="#" class="block py-2 text-gray-600 hover:text-gray-800"
+            >Tasks</a
+          >
+          <a href="#" class="block py-2 text-gray-600 hover:text-gray-800"
+            >Groups</a
+          >
+          <a href="#" class="block py-2 text-gray-600 hover:text-gray-800"
+            >Create Group</a
+          >
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      
+      {% comment %} {% block content  %}
+        {% include 'admin/userList.html' %}
+      {% endblock content %} {% endcomment %}
+    </main>
+
+    <script>
+      document
+        .getElementById("menu-toggle")
+        .addEventListener("click", function () {
+          document.getElementById("mobile-menu").classList.toggle("hidden");
+        });
+    </script>
+  </body>
+</html>

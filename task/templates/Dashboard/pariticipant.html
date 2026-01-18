@@ -1,10 +1,10 @@
-{% extends 'Dashboard/commonheader.html' %}
+{% extends 'userNav.html' %}
 
 {% block title %}
     Participants
 {% endblock title %}
     
-{% block task %}
+{% block usershow %}
     
 <div class=" items-center mb-6 relative">
     <h2 class="text-2xl font-bold text-gray-800">Participants List</h2>
@@ -36,7 +36,7 @@
         </thead>
 
         <tbody class="bg-white">
-            {% for task in participants %}
+            {% for task in participants.RBAC.all %}
             <tr class="border-b hover:bg-gray-100">
                 <td class="px-4 py-2 font-medium">
                     {{ task.Participant }}
@@ -77,5 +77,5 @@
 </div>
 
 
-{% endblock task %}
+{% endblock usershow %}
     

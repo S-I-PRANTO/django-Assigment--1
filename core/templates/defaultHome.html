@@ -1,0 +1,17 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock title %}
+{% block css %}
+<style>
+    .homeimg{
+       height: 400px;
+    }
+</style>
+{% endblock css %}
+{% block task %}
+    <div class="">
+        {% include "defaultNav.html" %}
+    </div>
+    <img class="homeimg w-full " src="{% static 'photo/1.png' %}" width="150">
+{% endblock task %}

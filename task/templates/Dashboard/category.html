@@ -1,10 +1,10 @@
-{% extends 'Dashboard/commonheader.html' %}
+{% extends 'userNav.html' %}
 
 {% block title %}
     Category
 {% endblock title %}
 
-{% block task %}
+{% block usershow %}
 
 <div class="p-6">
 
@@ -43,12 +43,6 @@
                     <td class="px-4 py-2 font-medium">{{ c.Event_Categorys }}</td>
                     <td class="px-4 py-2 text-gray-600">{{ c.description }}</td>
                     <td class="px-4 py-2 text-center space-x-2 flex">
-                        <a href="{% url 'update' c.id  %}?type=Category" class="text-blue-600 hover:text-blue-800 font-medium mr-2">Edit</a>
-                        |
-                          <form action="{% url 'delete' c.id  %}?type=category"   method="POST">
-                            {% csrf_token %}
-                              <button href="" class="text-red-600 hover:text-red-800">Delete</button>
-                        </form>
                     </td>
                 </tr>
                 {% empty %}
@@ -62,5 +56,5 @@
      <button  class="bg-slate-900 py-2 px-3 mt-2 text-white border rounded-lg"><a href="{% url 'Dashboard' %}">Back</a></button>
 </div>
 
-{% endblock task %}
+{% endblock usershow %}
     

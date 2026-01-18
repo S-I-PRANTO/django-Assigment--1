@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def No_permission(request):
+    return render(request,'No_permission.html')

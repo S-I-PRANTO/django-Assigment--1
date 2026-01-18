@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block task %}
+<div class="">
+    <nav class="bg-gray-800 w-full mb-10  p-4">
+    <div class="container mx-auto flex justify-between">
+      <a href=" {% url 'adminDashboard' %}" class="text-white py-2 ">Event Management</a>
+      <div class="space-x-4 flex">
+
+        <a href="{% url 'AdminEvent' %}" class="md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">Events</a>
+        <a href="{% url 'AdminCategroy' %}" class= "md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">Categories</a>
+        <a href="{% url 'createGroup' %}" class="md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">Groups</a>
+        <a href="{% url 'groupList' %}" class="md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">Groups_List</a>
+        <a href="{% url 'adminUserlist' %}" class="md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">User</a>
+
+                <div class="flex gap-1">
+          {% if request.user.is_authenticated %}
+              <div class="flex items-center">
+                  <p class="bg-white text-black border rounded username py-1 px-2">
+                      UserName: {{ request.user.username }}
+                  </p>
+
+                  <form action="{% url 'sign_out' %}" method="POST">
+                      {% csrf_token %}
+                      <button class=" md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">
+                          Sign_Out
+                      </button>
+                  </form>
+              </div>
+          {% else %}
+                <a
+                href="{% url 'sign_up' %}"
+                class=" md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+                >Sign_Up</a
+              >
+
+              <a
+                href="{% url 'sign_in' %}"
+                class=" md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+                >Sign_In</a
+              >
+          {% endif %}
+
+
+            </div>
+      </div>
+      
+
+    </div>
+    </nav>
+</div>
+    {% block userset %}
+    
+    {% endblock userset %}
+<div class="mt-10"></div>
+{% endblock task %}

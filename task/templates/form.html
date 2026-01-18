@@ -1,9 +1,18 @@
 
-   {% extends 'Dashboard/commonheader.html' %}
+   {% extends 'adminNav.html' %}
    {% block title %}Form{% endblock  %}
    
-   
-   {% block task %}
+   {% block css %}
+   <style>
+        fieldset {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+   </style>
+   {% endblock css %}
+   {% block userset %}
     
  
     
@@ -31,7 +40,7 @@
      
        <div class="bg-rose-500 p-12">
       
-         <form action="" method="POST" >
+         <form action="" method="POST" enctype="multipart/form-data" >
                 {% csrf_token %}
                 {{category}}
                 {{event}}
@@ -44,4 +53,4 @@
          </form>
        </div>
     </div>
-  {% endblock task %}
+  {% endblock userset %}
