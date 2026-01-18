@@ -29,12 +29,11 @@ def Loginhome(request):
     types=request.GET.get('type','all')
     todayDate=date.today()
 
-    total_participants = User.objects.aggregate(Total_participant=Count('id'))
+    total_participants = User.objects.aggregate(participantTotal=Count('id'))
     total_events = Event.objects.aggregate(total_Task=Count('id'))
     upcoming_events_count = Event.objects.filter(data__gt=todayDate).aggregate(Upcome_Task=Count('id'))
     past_events_count = Event.objects.filter(data__lt=todayDate).aggregate(Past_Task=Count('id'))
     todaysEvent = Event.objects.filter(data=todayDate).select_related('category')
-    rsvp_events = request.user.RBAC.all()
     baseFilter = Event.objects.select_related('category').prefetch_related('participants')
     if types == 'pariticipant':
         showtask=baseFilter
@@ -55,7 +54,6 @@ def Loginhome(request):
                 'todayEvents'  :todaysEvent,
                 'showtask'     :showtask,
                 'types'        :types,
-                'rsvp'          :rsvp_events
              }
     
     user = request.user
