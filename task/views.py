@@ -29,10 +29,10 @@ def Loginhome(request):
     types=request.GET.get('type','all')
     todayDate=date.today()
 
-    total_participants = User.objects.aggregate(participantTotal=Count('id'))
-    total_events = Event.objects.aggregate(total_Task=Count('id'))
-    upcoming_events_count = Event.objects.filter(data__gt=todayDate).aggregate(Upcome_Task=Count('id'))
-    past_events_count = Event.objects.filter(data__lt=todayDate).aggregate(Past_Task=Count('id'))
+    totalParticipate = User.objects.aggregate(participantTotal=Count('id'))
+    totalEvents = Event.objects.aggregate(total_Task=Count('id'))
+    upcomingEvents_count = Event.objects.filter(data__gt=todayDate).aggregate(Upcome_Task=Count('id'))
+    past_Events_count = Event.objects.filter(data__lt=todayDate).aggregate(Past_Task=Count('id'))
     todaysEvent = Event.objects.filter(data=todayDate).select_related('category')
     baseFilter = Event.objects.select_related('category').prefetch_related('participants')
     if types == 'pariticipant':
@@ -47,10 +47,10 @@ def Loginhome(request):
 
     
 
-    context={   'pariticipants':total_participants,
-                'event'        :total_events,
-                'upcome'       :upcoming_events_count,
-                'past'         :past_events_count,
+    context={   'pariticipants':totalParticipate,
+                'event'        :totalEvents,
+                'upcome'       :upcomingEvents_count,
+                'past'         :past_Events_count,
                 'todayEvents'  :todaysEvent,
                 'showtask'     :showtask,
                 'types'        :types,
