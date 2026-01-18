@@ -34,28 +34,28 @@ def Loginhome(request):
     upcoming_events_count = Event.objects.filter(data__gt=todayDate).aggregate(Upcome_Task=Count('id'))
     past_events_count = Event.objects.filter(data__lt=todayDate).aggregate(Past_Task=Count('id'))
     todaysEvent = Event.objects.filter(data=todayDate).select_related('category')
-
-    baseFilter = Event.objects.select_related('category')
-    if types == 'event':
+    rsvp_events = request.user.RBAC.all()
+    baseFilter = Event.objects.select_related('category').prefetch_related('participants')
+    if types == 'pariticipant':
         showtask=baseFilter
 
     elif types == 'upcome':
         showtask=baseFilter.filter(data__gt=todayDate)
     elif types == 'past':
         showtask=baseFilter.filter(data__lt=todayDate)
-    elif types == 'pariticipant':
-        showtask=baseFilter
+   
     else:showtask=baseFilter
 
     
 
-    context={'pariticipants':total_participants,
-             'event'        :total_events,
-             'upcome'       :upcoming_events_count,
-             'past'         :past_events_count,
-             'todayEvents'  :todaysEvent,
-             'showtask'         :showtask
-
+    context={   'pariticipants':total_participants,
+                'event'        :total_events,
+                'upcome'       :upcoming_events_count,
+                'past'         :past_events_count,
+                'todayEvents'  :todaysEvent,
+                'showtask'     :showtask,
+                'types'        :types,
+                'rsvp'          :rsvp_events
              }
     
     user = request.user
