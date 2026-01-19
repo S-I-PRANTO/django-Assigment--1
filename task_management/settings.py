@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'task_management.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://event_management_pq3t_user:HwrxlmvQFF661Fvvzh5ePRsa5TOvTeG1@dpg-d58n44v5r7bs738qjgd0-a.virginia-postgres.render.com/event_management_pq3t',
+        default='postgresql://event_rwgm_user:TYtHWFgIOdAG6IyI80iarjSwE37no1Wl@dpg-d5muilhr0fns73f7tlpg-a.virginia-postgres.render.com/event_rwgm',
         conn_max_age=600
     )
 }
