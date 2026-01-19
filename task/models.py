@@ -18,9 +18,9 @@ class Event(models.Model):
     def __str__(self):
         return self.Event_Name
     
-class Participant(models.Model):
-    Participant=models.CharField(max_length=250)
-    description=models.TextField()
+# class Participant(models.Model):
+#     Participant=models.CharField(max_length=250)
+#     description=models.TextField()
     # Event=models.ManyToManyField(Event,related_name="participant", blank=True)
 
 
