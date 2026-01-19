@@ -20,7 +20,10 @@ def is_user(user):
 def admin_or_organizer(user):
     return is_admin(user) or is_organizer(user)
 def home(request):
-    return render(request,'defaultHome.html')
+    if request.user.is_authenticated:
+        return redirect('Loginhome')
+    else:
+        return redirect('sign_in')
 
 
 
