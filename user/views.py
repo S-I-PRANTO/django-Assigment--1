@@ -182,7 +182,7 @@ def group_list(request):
     return render(request,'admin/groupList.html',{'groups':groups})
 
 def Participent(request):
-    participants=Participant.objects.prefetch_related('Event')
+    participants=User.objects.prefetch_related('Event')
     context={'participants':participants}
     return render(request,'admin/Participateshow.html',context)
 
