@@ -16,6 +16,9 @@ SECRET_KEY = 'django-insecure-os(g309duyn9b6y@2v@7_3+0uy38+dys(+w#k)5^utyr93=-#*
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+
+AUTH_USER_MODEL='user.CustomUser'
+
 CSRF_TRUSTED_ORIGINS=['https://*.onrender.com','http://127.0.0.1:8000']
 
 INSTALLED_APPS = [
@@ -80,7 +83,7 @@ WSGI_APPLICATION = 'task_management.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://event_rwgm_user:TYtHWFgIOdAG6IyI80iarjSwE37no1Wl@dpg-d5muilhr0fns73f7tlpg-a.virginia-postgres.render.com/event_rwgm',
+        default='postgresql://event_management_database_mr31_user:rYsH2qbUiMM11egcjILupniYxyECnGrd@dpg-d5u6jccr85hc739vgbk0-a.virginia-postgres.render.com/event_management_database_mr31',
         conn_max_age=600
     )
 }
@@ -148,3 +151,5 @@ EMAIL_HOST_PASSWORD =config('EMAIL_HOST_PASSWORD')
 FRONTENT_URL='http://127.0.0.1:8000'
 
 LOGIN_URL='sign_in'
+
+# LOGOUT_REDIRECT_URL='Dashboards'

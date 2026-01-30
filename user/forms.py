@@ -1,13 +1,14 @@
 import re
 from django import forms
-from django.contrib.auth.models import User,Permission,Group
+from django.contrib.auth.models import Permission,Group
 from django_password_eye.fields import PasswordEye
 from django.contrib import messages
-from django.contrib.auth.forms import AuthenticationForm
-
+from django.contrib.auth.forms import AuthenticationForm,PasswordChangeForm,PasswordResetForm,SetPasswordForm
+from user.models import CustomUser
+from django.contrib.auth import get_user_model
+User=get_user_model()
 class maxinStyle:
     default_Style=' w-3/6 border border-gray-300 rounded px-3 py-2 m-3'
-
     def apply_style(self):
         for field_name,field in self.fields.items():
             if isinstance(field.widget,forms.TextInput):
@@ -102,7 +103,7 @@ class Sign_In(AuthenticationForm,maxinStyle):
         self.apply_style()
 
 
-class AssignRoleForm(maxinStyle, forms.Form):
+class AssignRoleForm( forms.Form):
     role=forms.ModelChoiceField(
         queryset=Group.objects.all(),
         empty_label="Select a Role",
@@ -125,3 +126,23 @@ class CreateGroupForm(maxinStyle, forms.ModelForm):
         model = Group
         fields = ['name', 'permissions']
 
+class CustomPasswordChange(maxinStyle,PasswordChangeForm):
+     pass
+
+class CustomPasswordResetView(maxinStyle,PasswordResetForm):
+     pass
+
+class CustomPasswordResetConfirm(maxinStyle,SetPasswordForm):
+     pass
+
+class EditProfileForm(maxinStyle,forms.ModelForm):
+    class Meta:
+          model=CustomUser
+          fields=['email','first_name','last_name','bio','profile_image','phone_number']
+
+
+    def clean_phone_number(self):
+        phone = self.cleaned_data['phone_number']
+        if phone.startswith("01"):
+            phone = "+88" + phone   
+        return phone

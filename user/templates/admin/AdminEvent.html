@@ -2,7 +2,14 @@
 {% block title %}
     AdminEvent
 {% endblock title %}
-{% block userset %}
+{% block css %}
+    <style>
+    .showimgs{
+        width: 200px;
+    }
+    </style>
+{% endblock css %}
+{% block show %}
 
 <div class="p-6">
 
@@ -59,6 +66,10 @@
                     <td class="px-4 py-2">{{ event.data }} {{ event.time }}</td>
                     <td class="px-4 py-2 text-center space-x-2 flex">
                         <a href="{% url 'adminview' event.id %}" class="text-blue-600 hover:text-blue-800 mr-2">View</a> |
+                        <form action="{% url 'rsvp_event' event.id %}" method="POST">
+                            {% csrf_token %}                 
+                        <a class="text-blue-600 hover:text-blue-800 mr-2"><button>RSVP</button></a>
+                        </form> |
                         <a href="{% url 'update' event.id %}?type=Event" class="text-green-600 hover:text-green-800 ">Edit</a>
                         <span class="ml-2" > |</span>
                         <form action="{% url 'delete' event.id %}?type=event"   method="POST">
@@ -84,47 +95,55 @@
     <h2 class="text-2xl font-bold mb-4">
         {{ viewTask.Event_Name }}
     </h2>
+    <div class="flex">
+        <table class="w-full border border-gray-300 text-sm">
+            <tr class="border-b">
+                <th class="text-left p-2 bg-gray-100 w-1/3">Category</th>
+                <td class="p-2">{{ viewTask.category.Event_Categorys }}</td>
+            </tr>
 
-    <table class="w-full border border-gray-300 text-sm">
-        <tr class="border-b">
-            <th class="text-left p-2 bg-gray-100 w-1/3">Category</th>
-            <td class="p-2">{{ viewTask.category.Event_Categorys }}</td>
-        </tr>
+            <tr class="border-b">
+                <th class="text-left p-2 bg-gray-100">Date & Time</th>
+                <td class="p-2">
+                    {{ viewTask.data }} | {{ viewTask.time }}
+                </td>
+            </tr>
 
-        <tr class="border-b">
-            <th class="text-left p-2 bg-gray-100">Date & Time</th>
-            <td class="p-2">
-                {{ viewTask.data }} | {{ viewTask.time }}
-            </td>
-        </tr>
+            <tr class="border-b">
+                <th class="text-left p-2 bg-gray-100">Location</th>
+                <td class="p-2">{{ viewTask.location }}</td>
+            </tr>
 
-        <tr class="border-b">
-            <th class="text-left p-2 bg-gray-100">Location</th>
-            <td class="p-2">{{ viewTask.location }}</td>
-        </tr>
+            <tr class="border-b">
+                <th class="text-left p-2 bg-gray-100">Description</th>
+                <td class="p-2">{{ viewTask.description }}</td>
+            </tr>
 
-        <tr class="border-b">
-            <th class="text-left p-2 bg-gray-100">Description</th>
-            <td class="p-2">{{ viewTask.description }}</td>
-        </tr>
+            <tr>
+                <th class="text-left p-2 bg-gray-100">Participants</th>
+                <td class="p-2">
+                    <ul class="list-disc pl-5">
+                        {% for p in viewTask.participant.all %}
+                            <li>{{ p.Participant }}</li>
+                        {% empty %}
+                            <li>No participants yet</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                
+            </tr>
 
-        <tr>
-            <th class="text-left p-2 bg-gray-100">Participants</th>
-            <td class="p-2">
-                <ul class="list-disc pl-5">
-                    {% for p in viewTask.participant.all %}
-                        <li>{{ p.Participant }}</li>
-                    {% empty %}
-                        <li>No participants yet</li>
-                    {% endfor %}
-                </ul>
-            </td>
-        </tr>
-    </table>
-
+        </table>
+        {% load static %}
+        {% if viewTask.img_add %}
+        <img src={{ viewTask.img_add.url}}  class=" showimgs rounded-lg">
+        {% else %}
+        <img src="{% static 'photo/2.png' %}" class="showimgs rounded-lg">
+        {% endif %}
+    </div>
     <button  class="bg-slate-900 py-2 px-3 mt-2 text-white border rounded-lg"><a href="{% url 'event' %}">Back</a></button>
 </div>
  
 {% endif %}
 
-{% endblock userset %}
+{% endblock show %}

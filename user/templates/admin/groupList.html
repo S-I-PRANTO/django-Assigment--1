@@ -1,5 +1,5 @@
 {% extends 'adminNav.html' %}
-{% block userset %}
+{% block show %}
       <h2 class="text-2xl font-bold text-center mt-4 mb-4">Groups and Permissions</h2>
       <div class="overflow-x-auto">
         <table class="table-auto w-4/6 m-auto border-collapse border border-gray-300">
@@ -13,7 +13,7 @@
             <!-- Example group data -->
                 
             {% for group in groups %}   
-            <tr class="odd:bg-white even:bg-gray-50">
+            <tr class="odd:bg-white even:bg-gray-50 helo">
               <td class="border border-gray-300 px-4 py-2 font-medium">
                 {{group.name}}
               </td>
@@ -31,4 +31,4 @@
           </tbody>
         </table>
       </div>
-{% endblock userset %}
+{% endblock show %}

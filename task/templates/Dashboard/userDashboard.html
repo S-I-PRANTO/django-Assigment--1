@@ -1,6 +1,6 @@
 {% extends 'userNav.html' %}
 {% block title %}Dashboard{% endblock title %}
-{% block usershow %}
+{% block show %}
     <div class="">
         <h2 class="text-center text-2xl font-bold mb-2 " > {{ request.user.username|upper}}_RSVP_EVENTS</h2>
 
@@ -32,6 +32,4 @@
     </tbody>
 </table>
 
-
-    </div>
-{% endblock usershow %}
+{% endblock show %}

@@ -1,5 +1,5 @@
 {% extends 'adminNav.html' %}
-{% block userset %}
+{% block show %}
 
 <div class="container mx-auto ">
   <div class="overflow-x-auto">
@@ -50,7 +50,7 @@
           
  
           
-        <tr class="hover:bg-gray-50 h-16">
+        <tr class=" h-16">
           <td class="px-4 py-6 ">{{forloop.counter}}</td>
           <td class="px-4 py-6 whitespace-nowrap">{{user.first_name}} {{user.last_name}} </td>
           <td class="px-4 py-6 whitespace-nowrap">{{user.username}} </td>
@@ -72,4 +72,4 @@
   </div>
 </div>
 
-{% endblock userset %}
+{% endblock show %}

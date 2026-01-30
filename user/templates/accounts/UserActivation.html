@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Activate Account</title>
+</head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:30px 0;">
+    <tr>
+      <td align="center">
+
+        <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,0.15);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#2563eb,#1e3a8a);padding:25px;text-align:center;">
+              <h1 style="margin:0;color:#ffffff;">Activate Your Account</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:30px;color:#111827;">
+              <p style="font-size:16px;">Hi <strong>{{ user.username }}</strong>,</p>
+
+              <p style="font-size:15px;line-height:1.6;">
+                Thank you for registering. Please confirm your email by clicking the button below.
+              </p>
+
+              <div style="text-align:center;margin:30px 0;">
+                <a href="{{ activation_url }}"
+                   style="background:#2563eb;color:#ffffff;padding:14px 28px;
+                          text-decoration:none;border-radius:30px;font-weight:bold;">
+                  Activate Account
+                </a>
+              </div>
+
+              <p style="font-size:14px;color:#374151;">
+                If you didn’t create this account, just ignore this email.
+              </p>
+
+              <hr style="border:none;border-top:1px solid #e5e7eb;margin:25px 0;">
+
+              <p style="font-size:13px;color:#6b7280;">
+                Thanks,<br>
+                <strong>Your Website Team</strong>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f9fafb;text-align:center;padding:12px;font-size:12px;color:#9ca3af;">
+              © {{ year }} Your Website. All rights reserved.
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
