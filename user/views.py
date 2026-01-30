@@ -48,12 +48,6 @@ def dashboard_redirect(request):
 class UserDash(TemplateView):
    template_name='userNav.html'
 
-# @login_required
-# def AdminEventVeiw(request,id):
-#     view_task=Event.objects.select_related('category').prefetch_related('participants').get(id=id)
-#     return render(request, '',{
-#         'viewTask':view_task
-#         })
 
 @method_decorator(login_required,name='dispatch')
 class AdminEventVeiw(DetailView):
