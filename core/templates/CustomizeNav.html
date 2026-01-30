@@ -1,0 +1,66 @@
+<nav class="bg-gray-800 w-full mb-10 p-4">
+  <div class="container mx-auto flex justify-between">
+    
+   {% if request.user.is_authenticated %}
+    {% for group in request.user.groups.all %}
+        {% if group.name == "Admin" %}
+            <a href="{% url 'adminDashboard' %}" class="text-white py-2">Event Management</a>
+        {% elif group.name == "Organizer" %}
+            <a href="{% url 'organize' %}" class="text-white py-2">Event Management</a>
+        {% elif group.name == "user" %}
+            <a href="{% url 'Dashboard' %}" class="text-white py-2">Event Management</a>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    {% include "non_logged_nav.html" %}
+{% endif %}
+
+
+    <div class="space-x-4 flex">
+       {% comment %} Admin Menu  {% endcomment %}
+      {% if request.user.groups.first.name == "Admin" %}
+        <a href="{% url 'event' %}" class="btn">Events</a>
+        <a href="{% url 'category' %}" class="btn">Categories</a>
+        <a href="{% url 'createGroup' %}" class="btn">Groups</a>
+        <a href="{% url 'groupList' %}" class="btn">Groups_List</a>
+        <a href="{% url 'adminUserlist' %}" class="btn">User</a>
+        <a href="{% url 'show_rsvp' %}" class="btn">RSVP_Events</a>
+      {% comment %} Organizer Menu {% endcomment %}
+      {% elif request.user.groups.first.name == "Organizer" %}
+        <a href="{% url 'event' %}" class="btn">Events</a>
+        <a href="{% url 'category' %}" class="btn">Categories</a>
+
+    {% comment %} Normal User Menu  {% endcomment %}
+      {% else %}
+        <a href="{% url 'event' %}" class="btn">Events</a>
+        <a href="{% url 'category' %}" class="btn">Categories</a>
+        <a href="{% url 'show_rsvp' %}" class="btn">RSVP_Events</a>
+      {% endif %}
+
+      <a href="{% url 'profile' %}" class="btn">Menu</a>
+
+      <div class="flex gap-1">
+        {% if request.user.is_authenticated %}
+          <div class="flex items-center">
+            <p class="bg-white text-black border rounded py-1 px-2">
+              {{ request.user.username }}
+            </p>
+
+            <form action="{% url 'sign_out' %}" method="POST">
+              {% csrf_token %}
+              <button class="btn ml-3">Sign_Out</button>
+            </form>
+          </div>
+        {% else %}
+          <a href="{% url 'sign_up' %}" class="btn">Sign_Up</a>
+          <a href="{% url 'sign_in' %}" class="btn">Sign_In</a>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+{% block Taskall %}
+
+{% endblock Taskall %}

@@ -1,15 +1,22 @@
-from django.shortcuts import render,redirect,HttpResponse
-from user.forms import CustomRegisterForm,Sign_In,AssignRoleForm,CreateGroupForm
+from django.shortcuts import render,redirect,HttpResponse,get_object_or_404
+from user.forms import CustomRegisterForm,Sign_In,AssignRoleForm,CreateGroupForm,EditProfileForm
 from django.contrib import messages
 from django.contrib.auth import login, logout
-from django.contrib.auth.models import User,Group
+from django.contrib.auth.models import Group
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.decorators import login_required,user_passes_test
+# from django.contrib.auth.decorators import login_required,user_passes_test
 from django.db.models import Prefetch
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required,user_passes_test,permission_required
 from task.models import Category,Event
 from django.db.models import Count,Q
-
+from django.views.generic import TemplateView,ListView,DetailView,CreateView,UpdateView,FormView
+from django.utils.decorators import method_decorator
+from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView
+from user.forms import CustomPasswordChange,CustomPasswordResetView,CustomPasswordResetConfirm
+from django.contrib.auth.views import PasswordChangeView,PasswordResetView,PasswordResetConfirmView
+from django.contrib.auth import get_user_model
+User=get_user_model()
 def is_admin(user):
     return user.is_superuser or user.groups.filter(name='Admin').exists()
 
@@ -37,38 +44,84 @@ def dashboard_redirect(request):
         return redirect('no_permission')
 
 
-@login_required
-def UserDash(request):
-    return render(request,'userNav.html')
+@method_decorator(login_required,name='dispatch')
+class UserDash(TemplateView):
+   template_name='userNav.html'
 
-@login_required
-def AdminEventVeiw(request,id):
-    view_task=Event.objects.select_related('category').prefetch_related('participants').get(id=id)
+# @login_required
+# def AdminEventVeiw(request,id):
+#     view_task=Event.objects.select_related('category').prefetch_related('participants').get(id=id)
+#     return render(request, '',{
+#         'viewTask':view_task
+#         })
+
+@method_decorator(login_required,name='dispatch')
+class AdminEventVeiw(DetailView):
+    model=Event
+    template_name='admin/AdminEvent.html'
+    context_object_name='viewTask'
+    pk_url_kwarg='id'
+    def get_queryset(self):
+        return Event.objects.select_related('category').prefetch_related('participants')
+
       
-    return render(request, 'admin/AdminEvent.html',{
-        'viewTask':view_task
-        })
+
+class ChangePasswords(PasswordChangeView):
+    template_name='accounts/changePassword.html'
+    form_class=CustomPasswordChange
+
+class CustomPasswordReset(PasswordResetView):
+    form_class=CustomPasswordResetView
+    template_name='accounts/password_reset_form.html'   
+    success_url=reverse_lazy('sign_in')
+    html_email_template_name='accounts/CustomEmailReset.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['portocol']='https'if self.request.is_secure() else 'http'
+        context['domain']=self.request.get_host()
+        
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request,'A Reset email sent. Please check your email')
+        return super().form_valid(form)
+    
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class=CustomPasswordResetConfirm
+    template_name='accounts/password_reset_form.html'   
+    success_url=reverse_lazy('sign_in')
+    
+    def form_valid(self, form):
+        messages.success(self.request,'Password has been reset successfully')
+        return super().form_valid(form)
+    
 
 
+AdminEventDecoretor=[login_required,user_passes_test(is_admin ,login_url='no_permission')]
+@method_decorator(AdminEventDecoretor,name='dispatch')
+class AdminEvents(ListView):
+    model=Event
+    template_name='admin/AdminEvent.html'
+    context_object_name='events'
 
-@login_required
-@user_passes_test(is_admin ,login_url='no_permission')
-def AdminEvent(request):
-    query = request.GET.get('searchText', '') 
-    base_query = Event.objects.select_related('category').annotate(participants_count=Count('participants'))
+    def get_queryset(self):
+        query = self.request.GET.get('searchText', '') 
+        base_query = Event.objects.select_related('category').annotate(participants_count=Count('participants'))
 
-    if query:
-        events = base_query.filter( Q(Event_Name__icontains=query) | Q(location__icontains=query)
-        )
-    else:
-        events = base_query
+        if query:
+            events = base_query.filter( Q(Event_Name__icontains=query) | Q(location__icontains=query)
+            )
+        else:
+            events = base_query
 
-    return render(request, 'admin/AdminEvent.html',{
-        'events': events,
-        'query': query,
-    })
-
-
+        return events
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] =self.request.GET.get('searchText', '') 
+        return context
+    
 
 @login_required
 @user_passes_test(is_admin ,login_url='no_permission')
@@ -105,12 +158,11 @@ def Sign_in(request):
                 return redirect('Dashboard')
     return render(request,'Auth/login.html',{'form':form})
 
-
 @login_required
 def Sign_out(request):
     if request.method == 'POST':
         logout(request)
-        return redirect('sign_in')
+        return redirect('Dashboards')
     
 def activate_user(request,user_id,token):
     try:
@@ -143,21 +195,29 @@ def admin_UserList(request):
             user.group_name = 'No Group Assigned'
     return render(request,'admin/userList.html',{"users":users})
 
-@login_required
-@user_passes_test(is_admin ,login_url='no_permission')
-def assign_role(request,user_id):
-    user=User.objects.get(id=user_id)
-    form=AssignRoleForm()
-    if request.method=="POST":
-        form=AssignRoleForm(request.POST)
-        if form.is_valid():
-            role=form.cleaned_data.get('role')
-            user.groups.clear()
-            user.groups.add(role)
-            messages.success(request,f"User {user.username} has been assigned to the {role.name} role")
-            return redirect('adminDashboard')
+
+
+AssignRoleDecoretor=[login_required,user_passes_test(is_admin ,login_url='no_permission')]
+@method_decorator(AssignRoleDecoretor,name='dispatch')
+class assign_role(FormView):
+    template_name = 'admin/assing_role.html'
+    form_class = AssignRoleForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.user = get_object_or_404(User, id=self.kwargs.get('user_id'))
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        role = form.cleaned_data.get('role')
+        self.user.groups.clear()
+        self.user.groups.add(role)
+        messages.success(
+            self.request,
+            f"User {self.user.username} has been assigned to the {role.name} role"
+        )
+        return redirect('adminUserlist')
     
-    return render(request,'admin/assing_role.html',{'form':form})
+
 
 
 
@@ -227,3 +287,44 @@ def OrganizeEventVeiw(request,id):
     return render(request, 'Organize/OrganizeEvent.html',{
         'viewTask':view_task
         })
+
+class CustomProfileView(TemplateView):
+    template_name='accounts/Profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user=self.request.user
+
+        if user.is_superuser:
+            base = 'adminNav.html'
+        elif user.groups.filter(name='Organizer').exists():
+            base = 'organizeNav.html'
+        else:
+            base = 'userNav.html'
+
+        context['base_template'] = base
+        context['username']=user.username
+        context['email']=user.email
+        context['name']=user.get_full_name
+        context['profile_image']=user.profile_image
+        context['phone_number']=user.phone_number
+        context['bio']=user.bio
+        context['member_Since']=user.date_joined
+        context['last_login']=user.last_login
+        return context
+    
+
+class EditProfileView(UpdateView):
+    model=User
+    form_class=EditProfileForm
+    template_name='accounts/Update_profile.html'
+    context_object_name='form'
+  
+
+    def get_object(self):
+        return self.request.user
+
+    
+    def form_valid(self, form):
+        form.save()
+        return redirect('profile')

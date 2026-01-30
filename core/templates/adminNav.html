@@ -11,6 +11,8 @@
         <a href="{% url 'createGroup' %}" class="md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">Groups</a>
         <a href="{% url 'groupList' %}" class="md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">Groups_List</a>
         <a href="{% url 'adminUserlist' %}" class="md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">User</a>
+        <a href="{% url 'show_rsvp' %}" class="md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">RSVP</a>
+        <a href="{% url 'profile' %}" class="md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">Menu</a>
 
                 <div class="flex gap-1">
           {% if request.user.is_authenticated %}
@@ -48,8 +50,8 @@
     </div>
     </nav>
 </div>
-    {% block userset %}
+    {% block show %}
     
-    {% endblock userset %}
+    {% endblock show %}
 <div class="mt-10"></div>
-{% endblock task %}
+{% endblock task %} 

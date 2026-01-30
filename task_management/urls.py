@@ -4,6 +4,7 @@ from django.urls import path,include
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf.urls.static import static
 from django.conf import settings
+from core.views import Home
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('task.urls')),

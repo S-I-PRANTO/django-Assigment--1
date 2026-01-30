@@ -54,6 +54,12 @@
         margin-bottom:10px;
         padding:10px
     }
+
+    .forgotbutton{
+        margin-top:17px;
+        margin-left:10px;
+        text-decoration:underline;
+    }
 </style>
     <div class="">
         {% include "defaultNav.html" %}
@@ -80,19 +86,13 @@
     </div>
  <form method="POST">
     {% csrf_token %}
-{% comment %} 
-  {% if form.non_field_errors %}
-<div class="bg-red-600 text-white p-2 rounded mb-3">
-    {% for error in form.non_field_errors %}
-       
-    {% endfor %}
-</div>
-{% endif %} {% endcomment %}
 
-    
     {{form.as_p}}
 
-    <button class="signBtn p-2 rounded text-white" type="submit">Sign In</button>
+      <div class="flex items-center ">
+        <button class="signBtn p-2 rounded text-white" type="submit">Sign In</button>
+         <a class='forgotbutton' href="{% url 'passwordReset' %}">Forgot_password</a>
+    </div>
 </form>
 
 </div>

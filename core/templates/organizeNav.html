@@ -9,6 +9,8 @@
 
         <a href="{% url 'organizeEvent' %}" class="md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">Events</a>
         <a href="{% url 'organizeCategory' %}" class= "md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">Categories</a>
+        <a href="{% url 'profile' %}" class="md:block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition ml-3 duration-300 ">Menu</a>
+
         {% comment %} {% if request.user.is_superuser  %}
             {% include "adminNav.html" %}
         {% endif %} {% endcomment %}
@@ -50,7 +52,7 @@
     </nav>
 
 </div>
-{% block Organizeshow %}
-{% endblock Organizeshow %}
+{% block show %}
+{% endblock show %}
 {% endblock task %}
 
