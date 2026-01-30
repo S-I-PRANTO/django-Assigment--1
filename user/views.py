@@ -67,8 +67,17 @@ class AdminEventVeiw(DetailView):
       
 
 class ChangePasswords(PasswordChangeView):
-    template_name='accounts/changePassword.html'
-    form_class=CustomPasswordChange
+    template_name = 'accounts/changePassword.html'
+    form_class = CustomPasswordChange
+    success_url = reverse_lazy('sign_in')  
+    def form_valid(self, form):
+        messages.success(self.request, "Password changed successfully!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Please correct the errors below.")
+        return super().form_invalid(form)
+    
 
 class CustomPasswordReset(PasswordResetView):
     form_class=CustomPasswordResetView

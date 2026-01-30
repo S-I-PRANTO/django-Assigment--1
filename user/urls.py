@@ -40,7 +40,7 @@ urlpatterns = [
 
     path('profile/',CustomProfileView.as_view(),name='profile'),
     path('password_change/',ChangePasswords.as_view(),name='changePassword'),
-    path('password_change/done/',PasswordChangeDoneView.as_view(template_name='accounts/chnagePasswordDone.html'),name='passwordChangedone'),
+    path('password_change/done/',PasswordChangeDoneView.as_view(template_name='accounts/password_change_done.html'),name='password_change_done'),
 
     path('password_reset/',CustomPasswordReset.as_view(),name='passwordReset'),
     path('password_reset/confirm/<uidb64>/<token>/',CustomPasswordResetConfirmView.as_view(),name='password_reset_confirm'),

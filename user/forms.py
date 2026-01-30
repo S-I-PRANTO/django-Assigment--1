@@ -142,7 +142,9 @@ class EditProfileForm(maxinStyle,forms.ModelForm):
 
 
     def clean_phone_number(self):
-        phone = self.cleaned_data['phone_number']
-        if phone.startswith("01"):
-            phone = "+88" + phone   
-        return phone
+            phone = self.cleaned_data.get('phone_number')
+            if phone:
+                edit = User.objects.filter(phone_number=phone).exclude(pk=self.instance.pk)
+                if edit.exists():
+                    raise forms.ValidationError("Phone number already exists!")
+            return phone
